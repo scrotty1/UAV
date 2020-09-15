@@ -6,6 +6,9 @@ from dronekit import connect, VehicleMode, LocationGlobalRelative, LocationGloba
 from dronekit_sitl import SITL
 import time
 import argparse
+import matplotlib.pyplot as plt
+LAT_ARR = []
+LON_ARR = []
 
 lat_1 = 41715167
 lon_1 = -86243146
@@ -232,31 +235,53 @@ print("Set groundspeed to 15m/s")
 vehicle.groundspeed=15
 print("Heading to top right: North 41.715167 West -86.243147")
 goto(41.715167, -86.243147)
+LAT_ARR.append(start_lat)
+LON_ARR.append(start_lon)
 down = True
 up = False
-right = False
+right1 = False
+right2 = False
 while (not box_found):
     if (down):
         lat_goal = start_lat - (8.17e-4)
         lon_goal = start_lon
         goto(lat_goal, lon_goal)
+        LAT_ARR.append(lat_goal)
+        LON_ARR.append(lon_goal)
         down = False
         up = False
-        right = True
-    elif (right):
+        right1 = True
+        right2 = False
+    elif (right1):
         lat_goal = lat_goal
         lon_goal = lon_goal - (4.51566e-5) # based on degrees per 5 meters
         goto(lat_goal, lon_goal)
+        LAT_ARR.append(lat_goal)
+        LON_ARR.append(lon_goal)
         down = False
         up = True
-        right = False
+        right1 = False
+        right2 = False
     elif (up):
         lat_goal = lat_goal + (8.17e-4)
         lon_goal = lon_goal
         goto(lat_goal, lon_goal)
+        LAT_ARR.append(lat_goal)
+        LON_ARR.append(lon_goal)
+        down = False
+        up = False
+        right1 = False
+        right2 = True
+    elif (right2):
+        lat_goal = lat_goal - (4.51566e-5)
+        lon_goal = lon_goal
+        goto(lat_goal, lon_goal)
+        LAT_ARR.append(lat_goal)
+        LON_ARR.append(lon_goal)
         down = True
         up = False
-        right = False
+        right1 = False
+        right2 = False
 
 
 
