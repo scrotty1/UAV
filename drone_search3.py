@@ -187,7 +187,7 @@ def goto(dNorth, dEast, gotoFunction=vehicle.simple_goto):
 def ping(alocation1, hidden_spot):
     dist_between = get_distance_metres(alocation1, hidden_spot)
     print("Distance between target: " + str(dist_between))
-    if (dist_between <= 5):
+    if (dist_between <= 15):
         finish()
 
 
