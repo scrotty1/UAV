@@ -37,7 +37,7 @@ if not connection_string:
     sitl_defaults = '~/git/ardupilot/tools/autotest/default_params/copter.parm'
     sitl = SITL()
     sitl.download('copter', '3.3', verbose=True)
-    sitl_args = ['-I0', '--model', 'quad', '--home=home_lat, home_long,0,180']
+    sitl_args = ['-I0', '--model', 'quad', '--home=41.714841, -86.241941,0,180']
     sitl.launch(sitl_args, await_ready=True, restart=True)
     connection_string = 'tcp:127.0.0.1:5760'
 
