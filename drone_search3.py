@@ -192,6 +192,7 @@ def ping(alocation1, hidden_spot):
 
 
 def finish():
+    found = True
     currentLocation = vehicle.location.global_relative_frame
     targetLocation = hidden_spot
     targetDistance = get_distance_metres(currentLocation, targetLocation)
@@ -223,13 +224,39 @@ def finish():
 
 #box_loc = hide_black_box()
 #print(box_loc)
+start_lat = 41.715167
+start_lon = -86.243147
 # Fly in a snake pattern to try and find box starting at the top left
 print("TRIANGLE path using standard Vehicle.simple_goto()")
 print("Set groundspeed to 15m/s")
 vehicle.groundspeed=15
 print("Heading to top right: North 41.715167 West -86.243147")
 goto(41.715167, -86.243147)
-
+down = True
+up = False
+right = False
+while (!found):
+    if (down):
+        lat_goal = start_lat - (8.17e-4)
+        lon_goal = start_lon
+        goto(lat_goal, lon_goal)
+        down = False
+        up = False
+        right = True
+    elif (right):
+        lat_goal = lat_goal
+        lon_goal = lon_goal - (4.51566e-5) # based on degrees per 5 meters
+        goto(lat_goal, lon_goal)
+        down = False
+        up = True
+        right = False
+    elif (up):
+        lat_goal = lat_goal + (8.17e-4)
+        lon_goal = lon_goal
+        goto(lat_goal, lon_goal)
+        down = True
+        up = False
+        right = False
 
 
 
