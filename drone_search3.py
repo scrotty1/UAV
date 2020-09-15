@@ -70,8 +70,8 @@ def hide_black_box():
     print("Black Box Longitude is " + new_longitude)
     return (new_latitude, new_longitude, 0)
 
-box_loc = hide_black_box()
-print(box_loc[1])
+hidden_coords = hide_black_box()
+hidden_spot = LocationGlobalRelative(float(hidden_coords[0]), float(hidden_coords[1]), float(hidden_coords[2]))
 
 def arm_and_takeoff(a_target_altitude):
     """
@@ -176,14 +176,16 @@ def goto(dNorth, dEast, gotoFunction=vehicle.simple_goto):
         #print "DEBUG: mode: %s" % vehicle.mode.name
         remainingDistance=get_distance_metres(vehicle.location.global_relative_frame, targetLocation)
         print("Distance to target: ", remainingDistance)
+        ping(vehicle.location.global_relative_frame, hidden_spot)
         if remainingDistance<=targetDistance*0.01: #Just below target, in case of undershoot.
             print("Reached target")
+            print(vehicle.location.global_relative_frame)
             break;
         time.sleep(.33)
 
 
-def ping(alocation1, alocation2):
-    dist_between = get_distance_metres(alocation1, alocation2)
+def ping(alocation1, hidden_spot):
+    dist_between = get_distance_metres(alocation1, hidden_spot)
     print("Distance between target: " + dist_between)
     if (dist_between <= 5):
         finish()
@@ -191,9 +193,9 @@ def ping(alocation1, alocation2):
 
 def finish():
     currentLocation = vehicle.location.global_relative_frame
-    targetLocation = get_location_metres(currentLocation, dNorth, dEast)
+    targetLocation = hidden_spot
     targetDistance = get_distance_metres(currentLocation, targetLocation)
-    gotoFunction(targetLocation)
+    vehicle.simple_goto(targetLocation)
     
     #print "DEBUG: targetLocation: %s" % targetLocation
     #print "DEBUG: targetLocation: %s" % targetDistance
@@ -207,8 +209,15 @@ def finish():
             break;
         time.sleep(.33)
 
-
-
+        # Land when the box is found
+        print("Setting LAND mode...")
+        vehicle.mode = VehicleMode("LAND")
+        # Close vehicle object before exiting script
+        print("Close vehicle object")
+        vehicle.close()
+        # Shut down simulator if it was started
+        if sitl is not None:
+            sitl.stop()
 
 
 
