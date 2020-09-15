@@ -66,8 +66,8 @@ def hide_black_box():
     new_longitude = (left-horizontal_offset)/1000000
     new_longitude = "%.6f"%(new_longitude)
     print("Black box hidden")
-    print("Black Box Latitude is " + new_latitude)
-    print("Black Box Longitude is " + new_longitude)
+    print("Black Box Latitude is " + str(new_latitude))
+    print("Black Box Longitude is " + str(new_longitude))
     return (new_latitude, new_longitude, 0)
 
 hidden_coords = hide_black_box()
@@ -186,7 +186,7 @@ def goto(dNorth, dEast, gotoFunction=vehicle.simple_goto):
 
 def ping(alocation1, hidden_spot):
     dist_between = get_distance_metres(alocation1, hidden_spot)
-    print("Distance between target: " + dist_between)
+    print("Distance between target: " + str(dist_between))
     if (dist_between <= 5):
         finish()
 
