@@ -18,7 +18,7 @@ home_long = -86.241941
 
 #Coordinates
 right = -86240335
-left = -8624316
+left = -86243146
 top = 41715167
 bottom = 41714350
 box_found = False
@@ -71,7 +71,7 @@ def hide_black_box():
     return (new_latitude, new_longitude, 0)
 
 box_loc = hide_black_box()
-print(box_loc)
+print(box_loc[1])
 
 def arm_and_takeoff(a_target_altitude):
     """
