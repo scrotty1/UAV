@@ -181,7 +181,7 @@ def goto(dNorth, dEast, gotoFunction=vehicle.simple_goto):
             print("Reached target")
             print(vehicle.location.global_relative_frame)
             break;
-        time.sleep(.33)
+        time.sleep(.1)
 
 
 def ping(alocation1, hidden_spot):
