@@ -21,6 +21,7 @@ right = -86240335
 left = -8624316
 top = 41715167
 bottom = 41714350
+box_found = False
 
 # Set up option parsing to get connection string
 parser = argparse.ArgumentParser(description='Commands vehicle using vehicle.simple_goto.')
@@ -37,7 +38,7 @@ if not connection_string:
     sitl_defaults = '~/git/ardupilot/tools/autotest/default_params/copter.parm'
     sitl = SITL()
     sitl.download('copter', '3.3', verbose=True)
-    sitl_args = ['-I0', '--model', 'quad', '--home=home_lat, home_long,0,180']
+    sitl_args = ['-I0', '--model', 'quad', '--home=41.714841, -86.241941,0,180']
     sitl.launch(sitl_args, await_ready=True, restart=True)
     connection_string = 'tcp:127.0.0.1:5760'
 
@@ -65,9 +66,12 @@ def hide_black_box():
     new_longitude = (left-horizontal_offset)/1000000
     new_longitude = "%.6f"%(new_longitude)
     print("Black box hidden")
-
+    print("Black Box Latitude is " + new_latitude)
+    print("Black Box Longitude is " + new_longitude)
     return (new_latitude, new_longitude, 0)
 
+box_loc = hide_black_box()
+print(box_loc)
 
 def arm_and_takeoff(a_target_altitude):
     """
@@ -175,18 +179,48 @@ def goto(dNorth, dEast, gotoFunction=vehicle.simple_goto):
         if remainingDistance<=targetDistance*0.01: #Just below target, in case of undershoot.
             print("Reached target")
             break;
-        time.sleep(2)
+        time.sleep(.33)
+
+
+def ping(alocation1, alocation2):
+    dist_between = get_distance_metres(alocation1, alocation2)
+    print("Distance between target: " + dist_between)
+    if (dist_between <= 5):
+        finish()
+
+
+def finish():
+    currentLocation = vehicle.location.global_relative_frame
+    targetLocation = get_location_metres(currentLocation, dNorth, dEast)
+    targetDistance = get_distance_metres(currentLocation, targetLocation)
+    gotoFunction(targetLocation)
+    
+    #print "DEBUG: targetLocation: %s" % targetLocation
+    #print "DEBUG: targetLocation: %s" % targetDistance
+
+    while vehicle.mode.name=="GUIDED": #Stop action if we are no longer in guided mode.
+        #print "DEBUG: mode: %s" % vehicle.mode.name
+        remainingDistance=get_distance_metres(vehicle.location.global_relative_frame, targetLocation)
+        print("Distance to target: ", remainingDistance)
+        if remainingDistance<=targetDistance*0.01: #Just below target, in case of undershoot.
+            print("Reached target")
+            break;
+        time.sleep(.33)
 
 
 
 
 
-# Fly a triangular path
+
+#box_loc = hide_black_box()
+#print(box_loc)
+# Fly in a snake pattern to try and find box starting at the top left
 print("TRIANGLE path using standard Vehicle.simple_goto()")
 print("Set groundspeed to 15m/s")
 vehicle.groundspeed=15
-print("Position North 41.715167 West -86.243147")
+print("Heading to top right: North 41.715167 West -86.243147")
 goto(41.715167, -86.243147)
+
 
 
 
