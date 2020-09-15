@@ -235,7 +235,7 @@ goto(41.715167, -86.243147)
 down = True
 up = False
 right = False
-while (!found):
+while (not found):
     if (down):
         lat_goal = start_lat - (8.17e-4)
         lon_goal = start_lon
