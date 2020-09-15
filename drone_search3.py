@@ -285,15 +285,18 @@ while (not box_found):
 
 
 
-# Land when the box is found
-print("Setting LAND mode...")
-vehicle.mode = VehicleMode("LAND")
-# Close vehicle object before exiting script
-print("Close vehicle object")
-vehicle.close()
-# Shut down simulator if it was started
-if sitl is not None:
-    sitl.stop()
+plt.plot([LAT_ARR], [LON_ARR])
+plt.show()
 
-print("Completed")
+# Land when the box is found
+#print("Setting LAND mode...")
+#vehicle.mode = VehicleMode("LAND")
+# Close vehicle object before exiting script
+#print("Close vehicle object")
+#vehicle.close()
+# Shut down simulator if it was started
+#if sitl is not None:
+#    sitl.stop()
+
+#print("Completed")
 
