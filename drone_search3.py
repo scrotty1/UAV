@@ -283,7 +283,7 @@ while (not box_found):
     elif (right1):
         #lat_goal = lat_goal
         #lon_goal = lon_goal + (5) # based on degrees per 5 meters
-        goto(0, 5)
+        goto(0, 10)
         time.sleep(10)
 	LAT_ARR.append(vehicle.location.global_frame.lat)
         LON_ARR.append(vehicle.location.global_frame.lon)
@@ -305,7 +305,7 @@ while (not box_found):
     elif (right2):
         #lat_goal = lat_goal + (5)
         #lon_goal = lon_goal
-        goto(0, 5)
+        goto(0, 10)
         time.sleep(10)
 	LAT_ARR.append(vehicle.location.global_frame.lat)
         LON_ARR.append(vehicle.location.global_frame.lon)

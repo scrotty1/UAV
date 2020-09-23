@@ -1,0 +1,5 @@
+Black Box Location [41.714617] [-86.242716]
+Landing Location [41.7145951] [-86.2427065]
+Starting Time: 1600833312.51
+Ending Time: 1600833670.36
+Time Taken to Locate Box: 5.0 mins, 57.8478889465 seconds
