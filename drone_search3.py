@@ -178,24 +178,27 @@ def goto(dNorth, dEast, gotoFunction=vehicle.simple_goto):
     while vehicle.mode.name=="GUIDED": #Stop action if we are no longer in guided mode.
         #print "DEBUG: mode: %s" % vehicle.mode.name
         remainingDistance=get_distance_metres(vehicle.location.global_relative_frame, targetLocation)
+        print("Current Drone Location: " + str(vehicle.location.local_frame))
         print("Distance to target: ", remainingDistance)
-        ping(vehicle.location.global_relative_frame, hidden_spot)
-        if remainingDistance<=targetDistance*0.01: #Just below target, in case of undershoot.
+        if (ping(vehicle.location.global_relative_frame, hidden_spot)):
+	    print("Found Box")
+	    finish()
+            break;
+        if remainingDistance<=targetDistance*0.05: #Just below target, in case of undershoot.
             print("Reached target")
-            print(vehicle.location.global_relative_frame)
             break;
         time.sleep(.1)
 
 
 def ping(alocation1, hidden_spot):
     dist_between = get_distance_metres(alocation1, hidden_spot)
-    print("Distance between target: " + str(dist_between))
-    if (dist_between <= 15):
-        finish()
+    print("Distance to box: " + str(dist_between))
+    if (dist_between <= 5):
+        return True
 
 
 def finish():
-    found = True
+    box_found = True
     currentLocation = vehicle.location.global_relative_frame
     targetLocation = hidden_spot
     targetDistance = get_distance_metres(currentLocation, targetLocation)
@@ -213,6 +216,16 @@ def finish():
             break;
         time.sleep(.33)
 
+	outF = open("myOutFile.txt", "w")
+        outF.write("Black Box Location [" + str(hidden_coords[0]) + "] [" + str(hidden_coords[1]) + "]\n")
+        outF.write("Landing Location [" + str(vehicle.location.global_frame.lat) + "] [" + str(vehicle.location.global_frame.lon) + "]\n")
+        outF.write("Starting Time: " + str(start_time) + "\n")
+        outF.write("Ending Time: " + str(time.time()) + "\n")
+        dif = time.time() - start_time
+        seconds = dif % 60
+        minutes = math.floor(dif / 60)
+        outF.write("Time Taken to Locate Box: " + str(minutes) + " mins, " + str(seconds) + " seconds\n")
+        outF.close() 
         # Land when the box is found
         print("Setting LAND mode...")
         vehicle.mode = VehicleMode("LAND")
@@ -224,7 +237,13 @@ def finish():
             sitl.stop()
 
 
+def plot():    
+    plt.plot([LAT_ARR], [LON_ARR], 'ro')
+    plt.plot(hidden_coords[0], hidden_coords[1], 'bo')    
+    plt.show()
 
+
+start_time = time.time()
 #box_loc = hide_black_box()
 #print(box_loc)
 start_lat = 41.715167
@@ -234,7 +253,8 @@ print("TRIANGLE path using standard Vehicle.simple_goto()")
 print("Set groundspeed to 15m/s")
 vehicle.groundspeed=15
 print("Heading to top right: North 41.715167 West -86.243147")
-goto(41.715167, -86.243147)
+goto(36.29094247, -133.4244931)
+time.sleep(10)
 LAT_ARR.append(start_lat)
 LON_ARR.append(start_lon)
 down = True
@@ -242,42 +262,53 @@ up = False
 right1 = False
 right2 = False
 while (not box_found):
+    global lat_goal
+    global lon_goal
+    print("down ", down)
+    print("up", up)
+    print("right1", right1)
+    print("right2", right2)
     if (down):
-        lat_goal = start_lat - (8.17e-4)
-        lon_goal = start_lon
-        goto(lat_goal, lon_goal)
-        LAT_ARR.append(lat_goal)
-        LON_ARR.append(lon_goal)
+        #lat_goal = start_lat - (80)
+        #lon_goal = start_lon
+        goto(-80, 0)
+        time.sleep(10)
+	LAT_ARR.append(vehicle.location.global_frame.lat)
+        LON_ARR.append(vehicle.location.global_frame.lon)
         down = False
         up = False
         right1 = True
         right2 = False
+	plot()
     elif (right1):
-        lat_goal = lat_goal
-        lon_goal = lon_goal - (4.51566e-5) # based on degrees per 5 meters
-        goto(lat_goal, lon_goal)
-        LAT_ARR.append(lat_goal)
-        LON_ARR.append(lon_goal)
+        #lat_goal = lat_goal
+        #lon_goal = lon_goal + (5) # based on degrees per 5 meters
+        goto(0, 5)
+        time.sleep(10)
+	LAT_ARR.append(vehicle.location.global_frame.lat)
+        LON_ARR.append(vehicle.location.global_frame.lon)
         down = False
         up = True
         right1 = False
         right2 = False
     elif (up):
-        lat_goal = lat_goal + (8.17e-4)
-        lon_goal = lon_goal
-        goto(lat_goal, lon_goal)
-        LAT_ARR.append(lat_goal)
-        LON_ARR.append(lon_goal)
+        #lat_goal = lat_goal + (90.95)
+        #lon_goal = lon_goal
+        goto(80, 0)
+        time.sleep(10)
+	LAT_ARR.append(vehicle.location.global_frame.lat)
+        LON_ARR.append(vehicle.location.global_frame.lon)
         down = False
         up = False
         right1 = False
         right2 = True
     elif (right2):
-        lat_goal = lat_goal - (4.51566e-5)
-        lon_goal = lon_goal
-        goto(lat_goal, lon_goal)
-        LAT_ARR.append(lat_goal)
-        LON_ARR.append(lon_goal)
+        #lat_goal = lat_goal + (5)
+        #lon_goal = lon_goal
+        goto(0, 5)
+        time.sleep(10)
+	LAT_ARR.append(vehicle.location.global_frame.lat)
+        LON_ARR.append(vehicle.location.global_frame.lon)
         down = True
         up = False
         right1 = False
