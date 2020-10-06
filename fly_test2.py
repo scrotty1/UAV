@@ -156,7 +156,7 @@ log1 = CoordinateLogger()
 
 startLat = vehicle.location.global_relative_frame.lat
 startLon = vehicle.location.global_relative_frame.lon
-startLocation = Location(startLat, startLon)
+startLocation = LocationGlobalRelative(startLat, startLon, vehicle.location.global_relative_frame.alt)
 
 log1.add_data(startLat, startLon)
 
